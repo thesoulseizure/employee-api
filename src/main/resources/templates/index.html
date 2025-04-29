@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Employee Form</title>
+  <link rel="stylesheet" href="/css/styles.css?v=1.0">
+</head>
+<body>
+<h2>Add New Employee</h2>
+<div th:if="${message}" th:text="${message}" class="message"></div>
+<form method="post" th:action="@{/saveEmployee}" th:object="${employee}">
+  <label>Employee ID:</label><input type="text" th:field="*{employeeId}" required><br><br>
+  <label>Employee Name:</label><input type="text" th:field="*{employeeName}" required><br><br>
+  <label>Employee Email:</label><input type="email" th:field="*{employeeEmail}" required><br><br>
+  <label>Location:</label><input type="text" th:field="*{location}" required><br><br>
+  <button type="submit">Submit</button>
+</form>
+<br>
+<a href="/displayAll">View All Employees</a>
+
+<script>
+  // Auto-focus on Employee ID
+  document.querySelector("input[name='employeeId']").focus();
+
+  // Handle form submission with validation and button state
+  document.querySelector("form").addEventListener("submit", function(event) {
+    console.log("Submit event triggered");
+
+    // HTML5 validation check
+    if (!this.checkValidity()) {
+      console.log("HTML5 validation failed");
+      event.preventDefault();
+      return;
+    }
+
+    // Custom validation
+    const fields = [
+      { name: "employeeId", label: "Employee ID" },
+      { name: "employeeName", label: "Employee Name" },
+      { name: "employeeEmail", label: "Employee Email" },
+      { name: "location", label: "Location" }
+    ];
+    let isValid = true;
+    let errorMessage = "";
+
+    fields.forEach(field => {
+      const input = document.querySelector(`input[name='${field.name}']`);
+      console.log(`Checking ${field.name}:`, input ? input.value.trim() : "Input not found");
+      if (!input || !input.value.trim()) {
+        isValid = false;
+        errorMessage += `${field.label} is required.\n`;
+        if (input) input.style.borderColor = "red";
+      } else {
+        if (input) input.style.borderColor = "#ddd";
+      }
+    });
+
+    if (!isValid) {
+      event.preventDefault();
+      console.log("Validation failed:", errorMessage);
+      alert(errorMessage);
+    } else {
+      console.log("Validation passed, updating button and submitting...");
+      const button = document.querySelector("button");
+      button.disabled = true;
+      button.innerText = "Submitting...";
+      // Allow the form to submit naturally
+    }
+  });
+
+  // Fade out success message after 3 seconds
+  setTimeout(() => {
+    let message = document.querySelector(".message");
+    if (message) message.style.opacity = "0";
+  }, 3000);
+</script>
+</body>
+</html>

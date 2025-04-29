@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>All Employees</title>
+  <link rel="stylesheet" href="/css/styles.css?v=1.0">
+</head>
+<body>
+<h2>All Employees</h2>
+<table>
+  <tr>
+    <th onclick="sortTable(0)">Employee ID</th>
+    <th onclick="sortTable(1)">Name</th>
+    <th onclick="sortTable(2)">Email</th>
+    <th onclick="sortTable(3)">Location</th>
+    <th>Action</th>
+  </tr>
+  <tr th:each="emp : ${employees}">
+    <td th:text="${emp.employeeId}"></td>
+    <td th:text="${emp.employeeName}"></td>
+    <td th:text="${emp.employeeEmail}"></td>
+    <td th:text="${emp.location}"></td>
+    <td><a th:href="@{/display/{id}(id=${emp.employeeId})}">View</a></td>
+  </tr>
+</table>
+<br>
+<a href="/">Back to Form</a>
+
+<script>
+  function sortTable(n) {
+    let table = document.getElementsByTagName("table")[0];
+    let rows = Array.from(table.rows).slice(1);
+    rows.sort((a, b) => {
+      let aValue = a.cells[n].textContent;
+      let bValue = b.cells[n].textContent;
+      return aValue.localeCompare(bValue);
+    });
+    rows.forEach(row => table.appendChild(row));
+  }
+</script>
+</body>
+</html>
